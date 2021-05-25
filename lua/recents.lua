@@ -348,16 +348,6 @@ local function handle_number(n)
   handle_dir(recents[n])
 end
 
-local function select_()
-  local pos = api.nvim_win_get_cursor(0)
-  local row = pos[1]
-  if row <= pos_after_art then
-    return
-  end
-  local row2 = row - pos_after_art
-  handle_number(row2)
-end
-
 local function do_fzf()
   if not has_fzf then
     return
@@ -371,6 +361,20 @@ local function do_fzf()
     source = recents,
     sink = handle_dir
   }
+end
+
+local function select_()
+  local pos = api.nvim_win_get_cursor(0)
+  local row = pos[1]
+  if row <= pos_after_art then
+    return
+  end
+  local row2 = row - pos_after_art
+  if has_fzf and row2 < 2 then
+    do_fzf()
+  else
+    handle_number(row2 - 1)
+  end
 end
 
 local function edit_recents()
