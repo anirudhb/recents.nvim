@@ -175,6 +175,7 @@ local function set_mappings()
   for k, _ in ipairs(recents) do
     api.nvim_buf_set_keymap(buf, 'n', tostring(k), ':lua require"recents".handle_number('..k..')<CR>', { nowait = true, noremap = true, silent = true })
   end
+  api.nvim_buf_set_keymap(buf, 'n', '<CR>', ':lua require"recents".select_()<CR>', { nowait = true, noremap = true, silent = true})
 end
 
 local function get_wsl()
@@ -347,6 +348,16 @@ local function handle_number(n)
   handle_dir(recents[n])
 end
 
+local function select_()
+  local pos = api.nvim_win_get_cursor(0)
+  local row = pos[1]
+  if row <= pos_after_art then
+    return
+  end
+  local row2 = row - pos_after_art
+  handle_number(row2)
+end
+
 local function do_fzf()
   if not has_fzf then
     return
@@ -402,4 +413,5 @@ return {
   handle_number = handle_number,
   load_from_file = load_from_file,
   set_art = set_art,
+  select_ = select_,
 }
