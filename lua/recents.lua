@@ -399,11 +399,15 @@ local function load_from_file()
   else
     path = vim.fn.glob(cache_path.."/recents_win_path.txt")
   end
-  local dir = string.trim(vim.fn.readfile(path)[1])
-  if dir ~= "" then
-    vim.fn.delete(path)
-    handle_dir(dir)
+  if vim.fn.filereadable(path) ~= 1 then
+    return
   end
+  local dir = string.trim(vim.fn.readfile(path)[1])
+  vim.fn.delete(path)
+  if dir == "" or dir == nil then
+    return
+  end
+  handle_dir(dir)
 end
 
 local function set_art(s)
